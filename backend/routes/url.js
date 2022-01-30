@@ -9,15 +9,21 @@ router.get('/api/urls', (req, res) => {
   urls
     .read(url)
     .then((urls_resp) => res.json({ data: urls_resp }))
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      console.log('1');
+    });
 });
 
-router.get('/api/urls/:id', (req, res) => {
-  const id = req.params.id;
+router.get('/api/urls/:shortUrl', (req, res) => {
+  const shortUrl = req.params.shortUrl;
   urls
     .read(id)
-    .then((url) => res.json({ data: url }))
-    .catch((err) => console.log(err));
+    .then((url) => res.json({ data: longUrl }))
+    .catch((err) => {
+      console.log(err);
+      console.log('2');
+    });
 });
 
 router.post('/api/urls', (req, res) => {
@@ -26,7 +32,10 @@ router.post('/api/urls', (req, res) => {
   urls
     .create(longUrl, shortUrl)
     .then((url) => res.status(201).json({ data: note }))
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      console.log('3');
+    });
 });
 
 router.put('/api/urls/:id', (req, res) => {
@@ -40,7 +49,9 @@ router.put('/api/urls/:id', (req, res) => {
       url
         ? res.json({ data: url })
         : console.log(res, 404, 'Resource not found')
-    
     )
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      console.log('4')
+    });
 });

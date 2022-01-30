@@ -19,6 +19,7 @@ async function connect() {
 
   mongoose.connection.on('error', (err) => {
     console.log(err);
+    console.log('5')
   })
 }
 
