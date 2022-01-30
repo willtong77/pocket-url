@@ -30,7 +30,6 @@ class UrlDao {
     );
     return url;
   }
-
 }
 
 module.exports = UrlDao;
