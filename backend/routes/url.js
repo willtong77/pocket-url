@@ -1,57 +1,45 @@
-const UrlDao = require('../model/UrlDao');
-const express = require('express');
-const router = express.Router();
-
+const UrlDao = require('../data/UrlDao');
 const urls = new UrlDao();
 
-router.get('/api/urls', (req, res) => {
-  const url = req.query.shortUrl;
-  urls
-    .read(url)
-    .then((urls_resp) => res.json({ data: urls_resp }))
-    .catch((err) => {
-      console.log(err);
-      console.log('1');
-    });
-});
+module.exports = function(app) {
+  // GET
+  app.get('/urls', async (req, res) => {
+    const shortId = req.query.shortId;
+    if (!shortId) {
+      res
+        .status(400)
+        .json({
+          message:'You must query the database based on a shortUrl.'
+        })
+    } else {
+      try {
+        const data = await urls.readOne(shortId);
+        res.json({ data: data });
+      } catch (err) {
+        res.json({ data: null });
+        console.log(err);
+      }
+    }
+  });
 
-router.get('/api/urls/:shortUrl', (req, res) => {
-  const shortUrl = req.params.shortUrl;
-  urls
-    .read(id)
-    .then((url) => res.json({ data: longUrl }))
-    .catch((err) => {
-      console.log(err);
-      console.log('2');
-    });
-});
-
-router.post('/api/urls', (req, res) => {
-  const longUrl = req.body.longUrl;
-  const shortUrl = req.body.shortUrl;
-  urls
-    .create(longUrl, shortUrl)
-    .then((url) => res.status(201).json({ data: note }))
-    .catch((err) => {
-      console.log(err);
-      console.log('3');
-    });
-});
-
-router.put('/api/urls/:id', (req, res) => {
-  const id = req.params.id;
-  const longUrl = req.body.longUrl;
-  const shortUrl = req.body.shortUrl;
-
-  urls
-    .update(id, longUrl, shortUrl)
-    .then((url) => 
-      url
-        ? res.json({ data: url })
-        : console.log(res, 404, 'Resource not found')
-    )
-    .catch((err) => {
-      console.log(err);
-      console.log('4')
-    });
-});
+  // GET REDIRECT
+  app.get('/:shortId', async (req, res) => {
+    const shortId = req.params.shortId;
+    const url = await urls.readOne(shortId);
+    try {
+      res.redirect(url.longUrl);
+    } catch (err) { errorHandler(res, 500, err); }
+  })
+  
+  // POST
+  app.post('/urls/:short/', async function(req, res) {
+    const { long } = req.body;
+    if (!req.params.short || !long) {
+      res.status(800).json({ message: "need long and short man!!!" })
+      return;
+    }
+    
+    const data = await urls.create(long, req.params.short);
+    res.status(201).json({ data });
+  });
+}

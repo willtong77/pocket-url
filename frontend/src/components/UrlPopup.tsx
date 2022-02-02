@@ -28,14 +28,16 @@ const UrlPopup: FC<{
 
   return (
     <>
-      <div className='mb-6 w-80'>
+      <div>
         <input
           className="text-sm rounded-lg block w-full p-2.5 bg-gray-700 border border-gray-600 text-white hover:cursor-text"
           type="email" id="email"
           value={shortUrl} disabled readOnly
         />
-        <div className='absolute -translate-y-8 translate-x-72'>
-          <ClipboardSvg/>
+        <div className='absolute -translate-y-8 translate-x-96'>
+          <div className='absolute -translate-x-8'>
+            <ClipboardSvg/>
+          </div>
         </div>
       </div>
     </>
