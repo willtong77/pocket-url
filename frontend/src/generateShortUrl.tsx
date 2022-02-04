@@ -3,7 +3,6 @@ import { toast } from 'react-toastify';
 
 
 const generateShortUrl = async (longUrl: string, shortId: string = '') => {
-  console.log(shortId)
   const axios = require('axios');
   const api = 'http://localhost:4567/';
 

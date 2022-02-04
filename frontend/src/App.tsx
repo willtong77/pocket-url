@@ -1,19 +1,24 @@
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import LongUrlStatic from "./components/LongUrlStatic";
 import UrlPopup from "./components/UrlPopup";
 import generateShortUrl from "./generateShortUrl";
 
 function App() {
   const [urlGenerated, setUrlGenerated] = useState(false);
-  const [shortUrl, setShortUrl] = useState('');
-  const [longUrl, setLongUrl] = useState('');
+  const [urls, setUrls] = useState({
+    shortUrl: "",
+    longUrl: "",
+  })
   const [alias, setAlias] = useState('');
   const [buttonText, setButtonText] = useState('Generate Url');
   const [secondFormText, setSecondFormText] = useState('Your custom domain (optional)');
 
   const handleLongUrlChange = (event) => {
-    setLongUrl(event.target.value);
+    setUrls(previousState => {
+      return { ...previousState, longUrl: event.target.value }
+    });
   }
 
   const handleAliasChange = (event) => {
@@ -21,21 +26,34 @@ function App() {
   }
 
   const handleGenerateClick = async () => {
-    if (!longUrl && !urlGenerated) {
-      toast.error('You must insert a Url!', {
-        theme: 'dark'
+    if (!urlGenerated) {
+      // Now need to general a url
+      if (!urls.longUrl) {
+        toast.error('You must insert a Url!', { theme: 'dark' });
+        return;
+      }
+      const short = await generateShortUrl(urls.longUrl, alias);
+      if (short === 'error') {
+        return;
+      }
+      setUrls(previousState => {
+        return { ...previousState, shortUrl: short }
       });
-    } else { 
-      if (!urlGenerated) {
-        const short = await generateShortUrl(longUrl, alias);
-        if (short === 'error') return;
-        setShortUrl(short);
-        toast.success('Url Generated!', { theme: 'dark' });
-        console.log('here we are')
-      } else { setLongUrl(''); }
-      setButtonText(!urlGenerated ? 'Generate Another!' : 'Generate Url');
-      setSecondFormText(!urlGenerated ? 'Your Pocket URL' : 'Your custom domain (optional)');
-      setUrlGenerated(!urlGenerated);
+      toast.success('Url Generated!', { theme: 'dark' });
+      setUrlGenerated(true);
+      setButtonText('Generate Another!');
+      setSecondFormText('Your Pocket Url');
+    } else {
+      // Need to reset everything
+      setUrlGenerated(false);
+      // console.log(shortUrl, longUrl);
+      setUrls( {
+        shortUrl: "",
+        longUrl: ""
+      })
+      // console.log(shortUrl, longUrl);
+      setButtonText('Generate Url!');
+      setSecondFormText('Your custom domain (optional)')
     }
   };
 
@@ -57,14 +75,12 @@ function App() {
               <input
                 className="text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                 required
-                type="text" id={longUrl}
+                type="text" id={urls.longUrl}
                 onChange={handleLongUrlChange}
               />
               :
-              <input
-                className="text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500 hover:cursor-text"
-                type="text" value={longUrl}
-                required disabled readOnly
+              <LongUrlStatic 
+                longUrl={urls.longUrl}
               />
             }
           </div>
@@ -82,7 +98,7 @@ function App() {
             </h1>
             { urlGenerated ? 
               <div>
-                <UrlPopup shortUrl={shortUrl}/>
+                <UrlPopup shortUrl={urls.shortUrl}/>
               </div>
               :
               <div>

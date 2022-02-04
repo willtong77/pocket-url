@@ -2,7 +2,7 @@ require("dotenv").config();
 const mongoose = require('mongoose');
 
 const password = process.env.DB_ADMIN_PASSWORD;
-const dbname = 'pocketurl-db';
+const dbname = process.env.DB_USERNAME;
 const URI = `mongodb+srv://will:${password}@pocketurl-api.qyulk.mongodb.net/${dbname}?retryWrites=true&w=majority`
 
 const option = {
