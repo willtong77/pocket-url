@@ -46,12 +46,10 @@ function App() {
     } else {
       // Need to reset everything
       setUrlGenerated(false);
-      // console.log(shortUrl, longUrl);
       setUrls( {
         shortUrl: "",
         longUrl: ""
       })
-      // console.log(shortUrl, longUrl);
       setButtonText('Generate Url!');
       setSecondFormText('Your custom domain (optional)')
     }
