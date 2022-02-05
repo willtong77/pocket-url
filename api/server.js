@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
+const path = require('path');
 
 const port = process.env.PORT || 3000;
 app.use(cors());
@@ -34,19 +35,24 @@ mongoose.connect(URI, option);
 
 mongoose.connection.on('open', () => {
   console.log('Connected to MongoDB!');
+  
+  app.listen(port, () => {
+    console.log(`Server is listening on http://localhost:${port}`);
+  });
 });
 
 mongoose.connection.on('error', (err) => {
   console.log(err);
 });
 
-app.listen(port, () => {
-  console.log(`Server is listening on http://localhost:${port}`);
-});
-
 // Routes
 
 // GET
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 app.get('/urls', async (req, res) => {
   const shortId = req.query.shortId;
   if (!shortId) {
