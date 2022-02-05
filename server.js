@@ -1,11 +1,8 @@
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const path = require('path');
 const express = require('express');
 const app = express();
-const publicPath = path.join(__dirname, '..', 'public');
-app.use(express.static(publicPath));
 
 const port = process.env.PORT || 3000;
 app.use(cors());
@@ -41,7 +38,6 @@ mongoose.connection.on('open', () => {
 
 mongoose.connection.on('error', (err) => {
   console.log(err);
-  console.log('5')
 });
 
 app.listen(port, () => {
