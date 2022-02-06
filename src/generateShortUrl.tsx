@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 
 const generateShortUrl = async (longUrl: string, shortId: string = '') => {
   const axios = require('axios');
-  const api = 'https://pocket--url.herokuapp.com/';
+  const api = 'https://pocket-url-api.herokuapp.com/';
 
   let shortIdDb;
   let shortUrl;
