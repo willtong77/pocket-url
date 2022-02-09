@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 const generateShortUrl = async (longUrl: string, shortId: string = '') => {
   const axios = require('axios');
   const api = 'https://po-url.herokuapp.com/';
+  // const api = 'localhost:4567'; // uncomment this for local development
 
   let shortIdDb;
   let shortUrl;
